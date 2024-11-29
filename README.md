@@ -1,6 +1,7 @@
 # Warband Bank Log
 
 Warband Bank Log is a simple addon that allows you to see which character made changes to your Warband Bank.
+![Warband Bank Log](https://github.com/Noshei/Warband-Bank-Log/blob/main/Media/Log_Window.png?raw=true)
 
 ## Features:
 
