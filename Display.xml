@@ -1,0 +1,168 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+
+	<Frame name="WBLBaseFrameTemplate" inherits="PortraitFrameTemplate" parent="UIParent" virtual="true" movable="true" resizable="true" clampedToScreen="true" hidden="true" toplevel="true">
+		<Size x="500" y="300"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+            <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" historyLines="1" bytes="64" frameLevel="30">
+                <Size y="22"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="15" y="-25"/>
+                    <Anchor point="TOPRIGHT" x="-24" y="-25"/>
+                </Anchors>
+                <Scripts>
+                    <OnEnterPressed>
+                        WarbandBankLog:Search_EnterPressed(self)
+                    </OnEnterPressed>
+                </Scripts>
+            </EditBox>
+            <DropdownButton parentKey="SettingsDropdown">
+                <Size x="15" y="16"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.SearchBox" relativePoint="RIGHT" x="3"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Icon" atlas="questlog-icon-setting" useAtlasSize="true">
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="HIGHLIGHT">
+                        <Texture atlas="questlog-icon-setting" useAtlasSize="true" alphaMode="ADD" alpha="0.4">
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Icon"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnMouseDown>
+                        self.Icon:AdjustPointsOffset(1, -1)
+                    </OnMouseDown>
+                    <OnMouseUp>
+                        self.Icon:AdjustPointsOffset(-1, 1)
+                    </OnMouseUp>
+                    <OnClick>
+                        WarbandBankLog:GenerateSettingsMenu(self)
+                    </OnClick>
+                </Scripts>
+            </DropdownButton>
+            <Frame parentKey="Container">
+                <KeyValues>
+                    <KeyValue key="layoutType" value="InsetFrameTemplate" type="string"/>
+                </KeyValues>
+                <Layers>
+                    <Layer level="BACKGROUND" textureSubLevel="-4">
+                        <Texture parentKey="Bg" atlas="auctionhouse-background-index" useAtlasSize="false">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.SearchBox" relativePoint="BOTTOMLEFT" x="-5" y="-1"/>
+                    <Anchor point="BOTTOMRIGHT" x="-24" y="8"/>
+                </Anchors>
+                <Frames>
+                    <Frame parentKey="NineSlice" useParentLevel="true" inherits="NineSlicePanelTemplate"/>
+                    <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="8" y="-8"/>
+                            <Anchor point="BOTTOMRIGHT" x="-8" y="8"/>
+                        </Anchors>
+                    </Frame>
+                    <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="6" y="-7"/>
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="6" y="7"/>
+                        </Anchors>
+                    </EventFrame>
+                </Frames>
+            </Frame>
+			<Button parentKey="ResizeButton" frameLevel="30" inherits="PanelResizeButtonTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-1" y="3"/>
+				</Anchors>
+			</Button>
+		</Frames>
+        <Scripts>
+            <OnLoad>
+                tinsert(UISpecialFrames, self:GetName());
+                self:RegisterEvent("PLAYER_REGEN_DISABLED")
+                self:RegisterForDrag("LeftButton")
+                self.ResizeButton:Init(self, 300, 150, GetScreenWidth(), GetScreenHeight())
+
+                ButtonFrameTemplate_HidePortrait(self)
+
+                self.SetTitle(self, "Warband Bank Log")
+            </OnLoad>
+            <OnEvent>
+                if event == "PLAYER_REGEN_DISABLED" then
+                    self:Hide()
+                end
+            </OnEvent>
+            <OnDragStart>
+                self:StartMoving()
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+                self:stoppedMoving()
+            </OnDragStop>
+        </Scripts>
+	</Frame>
+
+    <Frame name="WBLItemListObjectTemplate" virtual="true" enableMouseMotion="true">
+        <Size x="300" y="18"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false">
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                        <Anchor point="RIGHT"/>
+                    </Anchors>
+                    <Scripts>
+                        <OnEnter>
+                            local parent = self:GetParent()
+                            parent:LockHighlight()
+                        </OnEnter>
+                        <OnLeave>
+                            local parent = self:GetParent()
+                            parent:UnlockHighlight()
+                        </OnLeave>
+                    </Scripts>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture atlas="search-highlight" useAtlasSize="true" alphaMode="ADD" alpha="0.8">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:SetHyperlinksEnabled(true)
+            </OnLoad>
+            <OnHyperlinkClick>
+                SetItemRef(link, text, button, nil);
+            </OnHyperlinkClick>
+            <OnHyperlinkEnter>
+                GameTooltip:SetOwner(self, self:GetTooltipAnchor())
+                GameTooltip:SetHyperlink(link)
+                GameTooltip:Show()
+            </OnHyperlinkEnter>
+            <OnHyperlinkLeave>
+                GameTooltip:Hide()
+            </OnHyperlinkLeave>
+        </Scripts>
+    </Frame>
+</Ui>
