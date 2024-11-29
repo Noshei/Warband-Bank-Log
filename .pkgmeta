@@ -1,8 +1,7 @@
-package-as: WarbandBankLog
+package-as: Warband-Bank-Log
 enable-nolib-creation: no
 
 ignore:
-  - .previews
   - .github
   - .vscode
   - .gitignore
