@@ -3,7 +3,7 @@ local WBL = LibStub("AceAddon-3.0"):NewAddon("Warband-Bank-Log", "AceEvent-3.0")
 WarbandBankLog = WBL
 
 WBL.DebugCount = 0
-WBL.EnableDebug = true
+WBL.EnableDebug = false
 
 local WarbankStart = BACKPACK_CONTAINER + ITEM_INVENTORY_BANK_BAG_OFFSET + NUM_BANKBAGSLOTS + 1
 local WarbankEnd = WarbankStart + 4
