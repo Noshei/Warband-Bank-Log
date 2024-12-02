@@ -146,7 +146,7 @@ end
 
 function WBL:BANKFRAME_OPENED()
     WBL.BankOpen = true
-    C_Timer.After(1, WBL.GetBankData)
+    WBL:GetBankData()
 end
 
 function WBL:GetBankData()
