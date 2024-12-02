@@ -3,9 +3,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 
 	<Frame name="WBLBaseFrameTemplate" inherits="PortraitFrameTemplate" parent="UIParent" virtual="true" movable="true" resizable="true" clampedToScreen="true" hidden="true" toplevel="true">
 		<Size x="500" y="300"/>
-		<Anchors>
-			<Anchor point="CENTER"/>
-		</Anchors>
 		<Frames>
             <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" historyLines="1" bytes="64" frameLevel="30">
                 <Size y="22"/>

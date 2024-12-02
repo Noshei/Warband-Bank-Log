@@ -7,13 +7,18 @@ WBL.Display = {}
 
 function WBL:CreateDisplay()
     local frame = CreateFrame("Frame", "WarbandBankLog_BaseFrame", UIParent, "WBLBaseFrameTemplate")
+    frame:ClearAllPoints()
     frame:SetPoint(
         WBL.db.profile.relativePoint,
         UIParent,
-        WBL.db.profile.relativePoint,
         WBL.db.profile.xPos,
         WBL.db.profile.yPos
     )
+    frame:SetSize(WBL.db.profile.width, WBL.db.profile.height)
+    frame.ResizeButton:SetOnResizeStoppedCallback(function()
+        WBL.db.profile.width, WBL.db.profile.height = frame:GetSize()
+    end)
+
     function frame:stoppedMoving()
         local rel, _, _, xPos, yPos = self:GetPoint()
         WBL.db.profile.xPos = xPos
