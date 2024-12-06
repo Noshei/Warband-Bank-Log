@@ -7,6 +7,7 @@ WBL.Display = {}
 
 function WBL:CreateDisplay()
     local frame = CreateFrame("Frame", "WarbandBankLog_BaseFrame", UIParent, "WBLBaseFrameTemplate")
+    frame:SetDontSavePosition(true)
     frame:ClearAllPoints()
     frame:SetPoint(
         WBL.db.profile.relativePoint,

@@ -25,7 +25,10 @@
     "CreateDataProvider",
     "CreateScrollBoxListLinearView",
     "class",
-    "SlashCmdList"
+    "SlashCmdList",
+    "EventUtil",
+    "Baganator_CategoryViewBankViewFrame",
+    "Baganator_SingleViewBankViewFrame"
 ],
   "Lua.diagnostics.disable": ["assign-type-mismatch"]
 }

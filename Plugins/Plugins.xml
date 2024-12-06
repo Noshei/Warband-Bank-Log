@@ -1,0 +1,34 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+
+    <Button name="WBLBaganatorIcon" virtual="true" inherits="UIPanelButtonTemplate">
+        <Size x="32" y="22"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\AddOns\Warband-Bank-Log\Media\Plugins\Scroll">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnEnter>
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetText(self.tooltipHeader)
+                if self.tooltipText then
+                    GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+                end
+                GameTooltip:Show()
+            </OnEnter>
+            <OnLeave>
+                GameTooltip:Hide()
+            </OnLeave>
+            <OnClick>
+                WBL_API:Toggle()
+            </OnClick>
+        </Scripts>
+    </Button>
+
+</Ui>
