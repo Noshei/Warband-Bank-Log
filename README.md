@@ -7,6 +7,8 @@ Warband Bank Log is a simple addon that allows you to see which character made c
 
 - Minimap and Broker Icons
 - Search Filter
+- Supported Bank Addons:
+  - [Baganator](https://www.curseforge.com/wow/addons/baganator) (Adds Button to Warband Bank UI) 
 
 ## Commands:
 
