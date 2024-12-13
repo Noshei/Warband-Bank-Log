@@ -196,9 +196,10 @@ function WBL:ACCOUNT_MONEY()
 end
 
 function WBL:GetPlayerInfo()
-    local _, class = C_PlayerInfo.GetClass({ unit = "player" })
+    local playerLoc = PlayerLocation:CreateFromUnit("player")
+    local _, class = C_PlayerInfo.GetClass(playerLoc)
     local playerData = {
-        name = C_PlayerInfo.GetName({ unit = "player" }),
+        name = C_PlayerInfo.GetName(playerLoc),
         realm = GetRealmName(),
         color = RAID_CLASS_COLORS[class].colorStr
     }
@@ -213,6 +214,7 @@ function WBL:GetBankContent()
     for bag = WarbankStart, WarbankEnd do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+
             if itemInfo then
                 local chunks = strsplittable(":", itemInfo.hyperlink)
                 chunks[10] = ""
