@@ -105,13 +105,16 @@ local function tableDiff(oldTable, newTable)
                 diff[itemLink] = {}
                 diff[itemLink].stackCount = newTable[itemLink] - itemCount
                 if diff[itemLink].stackCount > 0 then
+                    WBL:Debug("Table Diff: Added 1", 2, itemLink, itemCount, newTable[itemLink])
                     diff[itemLink].type = "added"
                 else
+                    WBL:Debug("Table Diff: Removed 1", 2, itemLink, itemCount, newTable[itemLink])
                     diff[itemLink].type = "removed"
                     diff[itemLink].stackCount = math.abs(diff[itemLink].stackCount)
                 end
             end
         else
+            WBL:Debug("Table Diff: Removed 2", 3, itemLink, itemCount)
             diff[itemLink] = {
                 type = "removed",
                 stackCount = itemCount
@@ -121,6 +124,7 @@ local function tableDiff(oldTable, newTable)
 
     for itemLink, itemCount in pairs(newTable) do
         if oldTable[itemLink] == nil then
+            WBL:Debug("Table Diff: Added 2", 3, itemLink, itemCount)
             diff[itemLink] = {
                 type = "added",
                 stackCount = itemCount
@@ -146,29 +150,7 @@ end
 
 function WBL:BANKFRAME_OPENED()
     WBL.BankOpen = true
-    WBL:GetBankData()
-end
-
-function WBL:GetBankData()
-    local tempBank = WBL:GetBankContent()
-    local tempGold = WBL:GetBankGold()
-    if WBL:NeedToInitialize() then
-        WBL:InitializeData(tempBank, tempGold)
-        return
-    end
-    local diffs = tableDiff(WBL.Bank, tempBank)
-    WBL:UpdateChanges(diffs, tempBank, tempGold)
-
-    if WBL.db.profile.autoOpen then
-        WBL_API:Open()
-    end
-end
-
-function WBL:BANKFRAME_CLOSED()
-    WBL.BankOpen = false
-    if WBL.db.profile.autoClose then
-        WBL_API:Close()
-    end
+    WBL:GetBankContent("BANKFRAME_OPENED")
 end
 
 function WBL:BAG_UPDATE(event, bag)
@@ -178,13 +160,35 @@ function WBL:BAG_UPDATE(event, bag)
         return
     end
 
-    local tempBank = WBL:GetBankContent()
+    WBL:GetBankContent("BAG_UPDATE")
+    WBL:Debug("BAG_UPDATE", 2, bag)
+end
+
+function WBL:GetBankData(tempBank, event)
     local tempGold = WBL:GetBankGold()
-    local diffs = tableDiff(WBL.Bank, tempBank)
     local playerData = WBL:GetPlayerInfo()
 
-    WBL:Debug("BAG_UPDATE", 2, bag, playerData.name, playerData.realm, playerData.color, tempGold)
+    if WBL:NeedToInitialize() then
+        WBL:InitializeData(tempBank, tempGold)
+        return
+    end
+
+    local diffs = tableDiff(WBL.Bank, tempBank)
+    if event == "BANKFRAME_OPENED" then
+        playerData = nil
+        if WBL.db.profile.autoOpen then
+            WBL_API:Open()
+        end
+    end
     WBL:UpdateChanges(diffs, tempBank, tempGold, playerData)
+end
+WBL:RegisterMessage("BankItemsLoaded", WBL.GetBankData)
+
+function WBL:BANKFRAME_CLOSED()
+    WBL.BankOpen = false
+    if WBL.db.profile.autoClose then
+        WBL_API:Close()
+    end
 end
 
 function WBL:ACCOUNT_MONEY()
@@ -208,23 +212,49 @@ end
 
 ---Gets the contents of the Warband Bank and returns a temporary table that will be used to compare to cached data
 ---see https://warcraft.wiki.gg/wiki/BagID bag ID's that are used for initial loop values
----@return table
-function WBL:GetBankContent()
-    local tempBank = {}
+function WBL:GetBankContent(event)
+    local items = {}
+    local continuableContainer = ContinuableContainer:Create()
     for bag = WarbankStart, WarbankEnd do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
-            local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+            local item = Item:CreateFromBagAndSlot(bag, slot)
+            if not item:IsItemEmpty() then
+                table.insert(items, item)
+                continuableContainer:AddContinuable(item)
 
-            if itemInfo then
-                local chunks = strsplittable(":", itemInfo.hyperlink)
-                chunks[10] = ""
-                chunks[11] = ""
-                local link = table.concat(chunks, ":")
-                tempBank[link] = (tempBank[link] or 0) + itemInfo.stackCount
+                --[[if not C_Item.IsItemDataCachedByID(itemInfo.itemID) then
+                    local item = Item:CreateFromBagAndSlot(bag, slot)
+                    item:ContinueOnItemLoad(function()
+                        output("Loaded item")
+                        local chunks = strsplittable(":", item:GetItemLink())
+                        chunks[10] = ""
+                        chunks[11] = ""
+                        local link = table.concat(chunks, ":")
+                        tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
+                    end)
+                else
+                    output("Cached item")
+                    local chunks = strsplittable(":", itemInfo.hyperlink)
+                    chunks[10] = ""
+                    chunks[11] = ""
+                    local link = table.concat(chunks, ":")
+                    tempBank[link] = (tempBank[link] or 0) + itemInfo.stackCount
+                end]]
             end
         end
     end
-    return tempBank
+    continuableContainer:ContinueOnLoad(function()
+        local tempBank = {}
+        for _, item in ipairs(items) do
+            WBL:Debug("Get Bank Content", 3, item:GetItemLink())
+            local chunks = strsplittable(":", item:GetItemLink())
+            chunks[10] = ""
+            chunks[11] = ""
+            local link = table.concat(chunks, ":")
+            tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
+        end
+        WBL:SendMessage("BankItemsLoaded", tempBank, event)
+    end)
 end
 
 ---@return number bankGold
@@ -307,5 +337,5 @@ function WBL:AddLogEntry(itemLink, itemType, itemData, playerData)
     table.insert(WBL.Logs, logEntry)
     WBL.DataProvider:Insert(logEntry)
     WBL.Display.BaseFrame.Container.ScrollBox:SetScrollPercentage(100)
-    WBL:Debug("added Log", 1, logEntry)
+    WBL:Debug("added Log", 1, logEntry.name, logEntry.changeType, logEntry.link)
 end

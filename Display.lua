@@ -78,24 +78,15 @@ function WBL:InitializeDataProvider()
 end
 
 function WBL_API:Open()
-    if not WBL.Display.BaseFrame then
-        WBL:CreateDisplay()
-    end
     WBL.Display.BaseFrame:Show()
     WBL.Display.BaseFrame.Container.ScrollBox:SetScrollPercentage(100)
 end
 
 function WBL_API:Close()
-    if not WBL.Display.BaseFrame then
-        WBL:CreateDisplay()
-    end
     WBL.Display.BaseFrame:Hide()
 end
 
 function WBL_API:Toggle()
-    if not WBL.Display.BaseFrame then
-        WBL:CreateDisplay()
-    end
     if WBL.Display.BaseFrame:IsVisible() then
         WBL_API:Close()
     else
