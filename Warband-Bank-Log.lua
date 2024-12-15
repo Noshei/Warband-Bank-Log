@@ -42,6 +42,7 @@ function WBL:OnInitialize()
 
     WBL:InitializeBroker()
     WBL:CreateDisplay()
+    WBL:CreateBankButton()
     WBL:MinimapHandler(WBL.db.profile.minimap.enable)
 
     SLASH_WarbandBankLog1 = "/warbandbanklog"
@@ -212,6 +213,7 @@ end
 
 ---Gets the contents of the Warband Bank and returns a temporary table that will be used to compare to cached data
 ---see https://warcraft.wiki.gg/wiki/BagID bag ID's that are used for initial loop values
+---@param event string
 function WBL:GetBankContent(event)
     local items = {}
     local continuableContainer = ContinuableContainer:Create()
@@ -221,25 +223,6 @@ function WBL:GetBankContent(event)
             if not item:IsItemEmpty() then
                 table.insert(items, item)
                 continuableContainer:AddContinuable(item)
-
-                --[[if not C_Item.IsItemDataCachedByID(itemInfo.itemID) then
-                    local item = Item:CreateFromBagAndSlot(bag, slot)
-                    item:ContinueOnItemLoad(function()
-                        output("Loaded item")
-                        local chunks = strsplittable(":", item:GetItemLink())
-                        chunks[10] = ""
-                        chunks[11] = ""
-                        local link = table.concat(chunks, ":")
-                        tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
-                    end)
-                else
-                    output("Cached item")
-                    local chunks = strsplittable(":", itemInfo.hyperlink)
-                    chunks[10] = ""
-                    chunks[11] = ""
-                    local link = table.concat(chunks, ":")
-                    tempBank[link] = (tempBank[link] or 0) + itemInfo.stackCount
-                end]]
             end
         end
     end

@@ -70,6 +70,20 @@ function WBL:CreateDisplay()
     WBL:InitializeDataProvider()
 end
 
+function WBL:CreateBankButton()
+    local WBLButton = CreateFrame("Button", "WBLBlizzardButton", AccountBankPanel, "UIPanelButtonTemplate")
+    WBLButton:SetPoint("BOTTOMLEFT", 2, 6)
+    WBLButton:SetSize(105, 21)
+    WBLButton:SetFrameLevel(700)
+    WBLButton:SetText("Log")
+
+    WBLButton:SetScript("OnClick", function()
+        WBL_API:Toggle()
+    end)
+
+    WBL.Display.Button = WBLButton
+end
+
 function WBL:InitializeDataProvider()
     if #WBL.Logs == 0 then
         return

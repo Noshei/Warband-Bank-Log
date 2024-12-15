@@ -29,7 +29,8 @@
     "EventUtil",
     "Baganator_CategoryViewBankViewFrame",
     "Baganator_SingleViewBankViewFrame",
-    "Baganator"
+    "Baganator",
+    "AccountBankPanel"
 ],
   "Lua.diagnostics.disable": ["assign-type-mismatch"]
 }

@@ -5,7 +5,7 @@ EventUtil.ContinueOnAddOnLoaded("Baganator", function()
         end
         local parent = details.region.Warband
 
-        local WBLButton = CreateFrame("Button", "WarbandBankLogButton", parent, "WBLBaganatorIcon")
+        local WBLButton = CreateFrame("Button", "WBLBaganatorButton", parent, "WBLBaganatorIcon")
         WBLButton:SetPoint("TOPLEFT", 5, 0)
         WBLButton:SetFrameLevel(700)
         WBLButton.tooltipHeader = "Warband Bank Log"

@@ -9,6 +9,7 @@ function WBL:InitializeBroker()
     local dataObj = ldb:NewDataObject(WBL.metaData.name, {
         type = "launcher",
         icon = 1505935,
+        label = "Warband Bank Log",
         OnClick = function(frame, button)
             if button == "LeftButton" then
                 WBL_API:Toggle()
