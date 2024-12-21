@@ -1,5 +1,10 @@
 ---@class WBL
-local WBL = LibStub("AceAddon-3.0"):GetAddon("Warband-Bank-Log")
+local _, WBL = ...
+
+-- Localize global functions
+local ipairs = ipairs
+local string = string
+local table = table
 
 local function SearchLogEntry(self, logEntry, results)
     local searchString = string.lower(self:GetText())

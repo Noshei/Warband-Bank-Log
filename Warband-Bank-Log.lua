@@ -1,6 +1,12 @@
----@class WBL : AceAddon-3.0, AceEvent-3.0, AceDB-3.0
-local WBL = LibStub("AceAddon-3.0"):NewAddon("Warband-Bank-Log", "AceEvent-3.0")
+---@class WBL
+local _, WBL = ...
 WarbandBankLog = WBL
+
+WBL.CallbackRegistry = CreateFromMixins(CallbackRegistryMixin)
+WBL.CallbackRegistry:OnLoad()
+WBL.CallbackRegistry:GenerateCallbackEvents({
+    "BankItemsLoaded",
+})
 
 WBL.DebugCount = 0
 WBL.EnableDebug = false
@@ -25,32 +31,44 @@ local type = type
 local unpack = unpack
 
 WBL.metaData = {
-    name = C_AddOns.GetAddOnMetadata("Warband-Bank-Log", "Title"),
+    name = "Warband-Bank-Log",
     version = C_AddOns.GetAddOnMetadata("Warband-Bank-Log", "Version"),
     notes = C_AddOns.GetAddOnMetadata("Warband-Bank-Log", "Notes"),
 }
 
-function WBL:OnInitialize()
-    WBL.db = LibStub("AceDB-3.0"):New("WarbandBankLogSettings", WBL.defaults, true)
-    WBL:LoadSavedVariables()
+local function ADDON_LOADED(_, addOnName)
+    WBL:Debug("ADDON_LOADED", 1, addOnName)
+    if addOnName == WBL.metaData.name then
+        WBL:Debug("OnInitialize", 2)
 
-    WBL:RegisterEvent("PLAYER_LOGOUT")
-    WBL:RegisterEvent("BANKFRAME_OPENED")
-    WBL:RegisterEvent("BANKFRAME_CLOSED")
-    WBL:RegisterEvent("BAG_UPDATE")
-    WBL:RegisterEvent("ACCOUNT_MONEY")
+        WBL:LoadDB()
+        WBL:LoadSavedVariables()
 
-    WBL:InitializeBroker()
-    WBL:CreateDisplay()
-    WBL:CreateBankButton()
-    WBL:MinimapHandler(WBL.db.profile.minimap.enable)
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", WBL.PLAYER_LOGOUT)
+        EventRegistry:RegisterFrameEventAndCallback("BANKFRAME_OPENED", WBL.BANKFRAME_OPENED)
+        EventRegistry:RegisterFrameEventAndCallback("BANKFRAME_CLOSED", WBL.BANKFRAME_CLOSED)
+        EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE", WBL.BAG_UPDATE)
+        EventRegistry:RegisterFrameEventAndCallback("ACCOUNT_MONEY", WBL.ACCOUNT_MONEY)
 
-    SLASH_WarbandBankLog1 = "/warbandbanklog"
-    SLASH_WarbandBankLog2 = "/wbl"
-    function SlashCmdList.WarbandBankLog()
-        WBL_API:Toggle()
+        WBL:InitializeBroker()
+        WBL:CreateDisplay()
+        WBL:CreateBankButton()
+
+        SLASH_WarbandBankLog1 = "/warbandbanklog"
+        SLASH_WarbandBankLog2 = "/wbl"
+        function SlashCmdList.WarbandBankLog()
+            WBL_API:Toggle()
+        end
     end
 end
+
+local function PLAYER_LOGIN()
+    WBL:MinimapHandler(WBL.db.settings.minimap.enable)
+end
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", ADDON_LOADED)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", PLAYER_LOGIN)
+
 
 function WBL:Debug(text, level, ...)
     if not WBL.EnableDebug then return end
@@ -146,15 +164,17 @@ function WBL:PLAYER_LOGOUT()
     WarbandBankLogDB.Logs = WBL.Logs
     WarbandBankLogDB.Bank = WBL.Bank
     WarbandBankLogDB.Gold = WBL.Gold
-end
 
+    WBL:UnloadDB()
+end
 
 function WBL:BANKFRAME_OPENED()
     WBL.BankOpen = true
     WBL:GetBankContent("BANKFRAME_OPENED")
 end
 
-function WBL:BAG_UPDATE(event, bag)
+function WBL:BAG_UPDATE(bag)
+    WBL:Debug("BAG_UPDATE", 3, bag)
     if not bag then return end
     if not WBL.BankOpen then return end
     if bag < WarbankStart or bag > WarbankEnd then
@@ -177,17 +197,17 @@ function WBL:GetBankData(tempBank, event)
     local diffs = tableDiff(WBL.Bank, tempBank)
     if event == "BANKFRAME_OPENED" then
         playerData = nil
-        if WBL.db.profile.autoOpen then
+        if WBL.db.settings.autoOpen then
             WBL_API:Open()
         end
     end
     WBL:UpdateChanges(diffs, tempBank, tempGold, playerData)
 end
-WBL:RegisterMessage("BankItemsLoaded", WBL.GetBankData)
+WBL.CallbackRegistry:RegisterCallback("BankItemsLoaded", WBL.GetBankData)
 
 function WBL:BANKFRAME_CLOSED()
     WBL.BankOpen = false
-    if WBL.db.profile.autoClose then
+    if WBL.db.settings.autoClose then
         WBL_API:Close()
     end
 end
@@ -236,7 +256,7 @@ function WBL:GetBankContent(event)
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
-        WBL:SendMessage("BankItemsLoaded", tempBank, event)
+        WBL.CallbackRegistry:TriggerEvent("BankItemsLoaded", tempBank, event)
     end)
 end
 

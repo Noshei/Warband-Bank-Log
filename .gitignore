@@ -1,7 +1,5 @@
 notes.txt
 Libs/*
-!Libs/LibDataBroker-1.1
-!Libs/AceGUI-3.0-NosheiWidgets
 .vs/
 Media/Icon_Large.xcf
 Media/Icon_Small.tga

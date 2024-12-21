@@ -1,5 +1,5 @@
 ---@class WBL
-local WBL = LibStub("AceAddon-3.0"):GetAddon("Warband-Bank-Log")
+local _, WBL = ...
 local ldb = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -23,7 +23,8 @@ function WBL:InitializeBroker()
     })
 
     -- Register with LibDBIcon
-    LibDBIcon:Register(WBL.metaData.name, dataObj, WBL.db.profile.minimap)
+    LibDBIcon:Register(WBL.metaData.name, dataObj, WBL.db.settings.minimap)
+    LibDBIcon:Hide(WBL.metaData.name)
 end
 
 function WBL:MinimapHandler(key)

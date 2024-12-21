@@ -1,5 +1,5 @@
 ---@class WBL
-local WBL = LibStub("AceAddon-3.0"):GetAddon("Warband-Bank-Log")
+local _, WBL = ...
 
 WBL_API = {}
 
@@ -10,21 +10,21 @@ function WBL:CreateDisplay()
     frame:SetDontSavePosition(true)
     frame:ClearAllPoints()
     frame:SetPoint(
-        WBL.db.profile.relativePoint,
+        WBL.db.settings.relativePoint,
         UIParent,
-        WBL.db.profile.xPos,
-        WBL.db.profile.yPos
+        WBL.db.settings.xPos,
+        WBL.db.settings.yPos
     )
-    frame:SetSize(WBL.db.profile.width, WBL.db.profile.height)
+    frame:SetSize(WBL.db.settings.width, WBL.db.settings.height)
     frame.ResizeButton:SetOnResizeStoppedCallback(function()
-        WBL.db.profile.width, WBL.db.profile.height = frame:GetSize()
+        WBL.db.settings.width, WBL.db.settings.height = frame:GetSize()
     end)
 
     function frame:stoppedMoving()
         local rel, _, _, xPos, yPos = self:GetPoint()
-        WBL.db.profile.xPos = xPos
-        WBL.db.profile.yPos = yPos
-        WBL.db.profile.relativePoint = rel
+        WBL.db.settings.xPos = xPos
+        WBL.db.settings.yPos = yPos
+        WBL.db.settings.relativePoint = rel
     end
     frame.SearchBox.clearButton:SetScript("OnClick", function() WBL:ClearSearch() end)
 
@@ -50,7 +50,7 @@ function WBL:CreateDisplay()
         end
         local message =
             "|cff979797[" ..
-            date(WBL.timeFormats[WBL.db.profile.timeFormat], logData.timeStamp) ..
+            date(WBL.timeFormats[WBL.db.settings.timeFormat], logData.timeStamp) ..
             "]|r " ..
             logData.name ..
             " " ..
