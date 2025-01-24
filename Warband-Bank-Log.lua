@@ -44,6 +44,8 @@ local function ADDON_LOADED(_, addOnName)
         WBL:LoadDB()
         WBL:LoadSavedVariables()
 
+        WBL:RunAnalytics()
+
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", WBL.PLAYER_LOGOUT)
         EventRegistry:RegisterFrameEventAndCallback("BANKFRAME_OPENED", WBL.BANKFRAME_OPENED)
         EventRegistry:RegisterFrameEventAndCallback("BANKFRAME_CLOSED", WBL.BANKFRAME_CLOSED)

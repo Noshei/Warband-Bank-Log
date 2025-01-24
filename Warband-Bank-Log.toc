@@ -2,12 +2,25 @@
 ## Title: Warband Bank Log
 ## Notes: Provides a log of which character added or removed items/gold from the Warband Bank
 ## Author: Noshei
-## Version: 1.0.10
+## Version: 1.0.11
+## OptionalDeps: WagoAnalytics
 ## SavedVariables: WarbandBankLogDB, WarbandBankLogSettings
 ## AddonCompartmentFunc: WarbandBankLog_OnAddonCompartmentClick
 ## IconTexture: 1505935
 ## X-Curse-Project-ID: 1150038
 ## X-Wago-ID: kGr0on6y
+## Category: Inventory
+## Category-enUS: Inventory
+## Category-deDE: Inventar
+## Category-esES: Inventario
+## Category-esMX: Inventario
+## Category-frFR: Inventaire
+## Category-itIT: Inventario
+## Category-koKR: 소지품
+## Category-ptBR: Inventário
+## Category-ruRU: Предметы
+## Category-zhCN: 物品栏
+## Category-zhTW: 物品欄
 
 embeds.xml
 
@@ -19,6 +32,7 @@ Display.lua
 Search.lua
 
 Config.lua
+Analytics.lua
 
 Broker.lua
 
