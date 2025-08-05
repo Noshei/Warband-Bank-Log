@@ -11,7 +11,7 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 WBL.DebugCount = 0
 WBL.EnableDebug = false
 
-local WarbankStart = BACKPACK_CONTAINER + ITEM_INVENTORY_BANK_BAG_OFFSET + NUM_BANKBAGSLOTS + 1
+local WarbankStart = Enum.BagIndex.AccountBankTab_1
 local WarbankEnd = WarbankStart + 4
 
 -- Localize global functions
@@ -190,6 +190,7 @@ end
 function WBL:GetBankData(tempBank, event)
     local tempGold = WBL:GetBankGold()
     local playerData = WBL:GetPlayerInfo()
+    WBL:Debug("GetBankData", 4, tempBank, event, tempGold, playerData)
 
     if WBL:NeedToInitialize() then
         WBL:InitializeData(tempBank, tempGold)
@@ -288,14 +289,18 @@ function WBL:InitializeData(tempBank, tempGold)
 end
 
 function WBL:UpdateChanges(diffs, tempBank, tempGold, playerData)
+    WBL:Debug("UpdateChanges", 5, diffs, tempBank, tempGold, playerData)
     if diffs ~= nil then
+        WBL:Debug("UpdateChanges", 6, "Diffs not nil")
         for itemLink, diff in pairs(diffs) do
+            WBL:Debug("UpdateChanges", 4, "Diffs not nil", itemLink, diff)
             WBL:AddLogEntry(itemLink, "item", diff, playerData)
         end
         WBL.Bank = tempBank
     end
 
     if WBL.Gold ~= tempGold then
+        WBL:Debug("UpdateChanges", 2, "Gold Change")
         local goldDiff = tempGold - WBL.Gold
         local logType = ""
         if goldDiff > 0 then
