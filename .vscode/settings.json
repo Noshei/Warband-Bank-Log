@@ -38,7 +38,8 @@
     "ITEM_INVENTORY_BANK_BAG_OFFSET",
     "ContinuableContainer",
     "RAID_CLASS_COLORS",
-    "SOUNDKIT"
+    "SOUNDKIT",
+    "BankFrame"
 ],
   "Lua.diagnostics.disable": ["assign-type-mismatch"]
 }

@@ -71,11 +71,11 @@ function WBL:CreateDisplay()
 end
 
 function WBL:CreateBankButton()
-    local WBLButton = CreateFrame("Button", "WBLBlizzardButton", AccountBankPanel, "UIPanelButtonTemplate")
+    local WBLButton = CreateFrame("Button", "WBLBlizzardButton", BankFrame, "UIPanelButtonTemplate")
     WBLButton:SetPoint("BOTTOMLEFT", 2, 6)
     WBLButton:SetSize(105, 21)
     WBLButton:SetFrameLevel(700)
-    WBLButton:SetText("Log")
+    WBLButton:SetText("Warbank Log")
 
     WBLButton:SetScript("OnClick", function()
         WBL_API:Toggle()
