@@ -252,10 +252,12 @@ function WBL:GetBankContent(event)
     continuableContainer:ContinueOnLoad(function()
         local tempBank = {}
         for _, item in ipairs(items) do
-            WBL:Debug("Get Bank Content", 3, item:GetItemLink())
-            local chunks = strsplittable(":", item:GetItemLink())
-            chunks[10] = ""
-            chunks[11] = ""
+            local itemLink = item:GetItemLink()
+            WBL:Debug("Get Bank Content", 3, itemLink)
+            local colorNameUsed = itemLink and string.sub(itemLink, 1, 3) == "|cn" and 1 or 0
+            local chunks = strsplittable(":", itemLink)
+            chunks[10 + colorNameUsed] = ""
+            chunks[11 + colorNameUsed] = ""
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
