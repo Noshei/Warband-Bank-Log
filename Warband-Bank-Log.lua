@@ -11,6 +11,8 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 WBL.DebugCount = 0
 WBL.EnableDebug = false
 
+WBL.FirstRun = true
+
 local WarbankStart = Enum.BagIndex.AccountBankTab_1
 local WarbankEnd = WarbankStart + 4
 
@@ -171,6 +173,14 @@ function WBL:PLAYER_LOGOUT()
 end
 
 function WBL:BANKFRAME_OPENED()
+    WBL:Debug("BANKFRAME_OPENED", 1, WBL.FirstRun, WBL.metaData.version, WBL.db.settings.version)
+    if WBL.FirstRun then
+        if WBL.metaData.version ~= WBL.db.settings.version then
+            WBL.db.settings.version = WBL.metaData.version
+        else
+            WBL.FirstRun = false
+        end
+    end
     WBL.BankOpen = true
     WBL:GetBankContent("BANKFRAME_OPENED")
 end
@@ -238,6 +248,7 @@ end
 ---see https://warcraft.wiki.gg/wiki/BagID bag ID's that are used for initial loop values
 ---@param event string
 function WBL:GetBankContent(event)
+    WBL:Debug("GetBankContent", 2, event)
     local items = {}
     local continuableContainer = ContinuableContainer:Create()
     for bag = WarbankStart, WarbankEnd do
@@ -254,8 +265,8 @@ function WBL:GetBankContent(event)
         for _, item in ipairs(items) do
             WBL:Debug("Get Bank Content", 3, item:GetItemLink())
             local chunks = strsplittable(":", item:GetItemLink())
-            chunks[10] = ""
             chunks[11] = ""
+            chunks[12] = ""
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
@@ -289,7 +300,7 @@ function WBL:InitializeData(tempBank, tempGold)
 end
 
 function WBL:UpdateChanges(diffs, tempBank, tempGold, playerData)
-    WBL:Debug("UpdateChanges", 5, diffs, tempBank, tempGold, playerData)
+    WBL:Debug("UpdateChanges", 5, diffs, tempBank, tempGold, playerData, WBL.FirstRun)
     if diffs ~= nil then
         WBL:Debug("UpdateChanges", 6, "Diffs not nil")
         for itemLink, diff in pairs(diffs) do
@@ -316,6 +327,9 @@ function WBL:UpdateChanges(diffs, tempBank, tempGold, playerData)
         WBL:AddLogEntry(nil, "gold", itemData, playerData)
         WBL.Gold = tempGold
     end
+    if WBL.FirstRun then
+        WBL.FirstRun = false
+    end
 end
 
 ---@param itemLink? string
@@ -323,6 +337,9 @@ end
 ---@param itemData table
 ---@param playerData? table
 function WBL:AddLogEntry(itemLink, itemType, itemData, playerData)
+    if WBL.FirstRun then
+        return
+    end
     local playerName = ""
     if not playerData then
         playerName = "Unknown"

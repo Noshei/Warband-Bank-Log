@@ -20,7 +20,8 @@ WBL.db.defaults = {
     autoClose = false,
     minimap = {
         enable = true,
-    }
+    },
+    version = "0.0.0",
 }
 
 WBL.timeFormats = {
