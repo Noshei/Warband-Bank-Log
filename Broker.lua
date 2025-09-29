@@ -24,7 +24,7 @@ function WBL:InitializeBroker()
 
     -- Register with LibDBIcon
     LibDBIcon:Register(WBL.metaData.name, dataObj, WBL.db.settings.minimap)
-    LibDBIcon:Hide(WBL.metaData.name)
+    --LibDBIcon:Hide(WBL.metaData.name)
 end
 
 function WBL:MinimapHandler(key)

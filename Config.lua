@@ -19,7 +19,7 @@ WBL.db.defaults = {
     autoOpen = false,
     autoClose = false,
     minimap = {
-        enable = true,
+        hide = false,
     },
     version = "0.0.0",
 }
@@ -121,11 +121,11 @@ function WBL:GenerateSettingsMenu(frame)
         )
         frame.settings.minimap = rootDescription:CreateCheckbox("Minimap Icon",
             function() --Getter function
-                return WBL.db.settings.minimap.enable
+                return not WBL.db.settings.minimap.hide
             end,
             function() --Setter function
-                WBL.db.settings.minimap.enable = not WBL.db.settings.minimap.enable
-                WBL:MinimapHandler(WBL.db.settings.minimap.enable)
+                WBL.db.settings.minimap.hide = not WBL.db.settings.minimap.hide
+                WBL:MinimapHandler(not WBL.db.settings.minimap.hide)
             end
         )
         frame.settings.timeFormat = rootDescription:CreateButton("Time Format", function() end)

@@ -9,7 +9,7 @@ function WBL:RunAnalytics()
 
     WagoAnalytics:Switch("AutoOpen", WBL.db.settings.autoOpen)
     WagoAnalytics:Switch("AutoClose", WBL.db.settings.autoClose)
-    WagoAnalytics:Switch("MinimapButton", WBL.db.settings.minimap.enable)
+    WagoAnalytics:Switch("MinimapButton", WBL.db.settings.minimap.hide)
 
     WagoAnalytics:SetCounter("timeFormat", WBL.db.settings.timeFormat)
 end

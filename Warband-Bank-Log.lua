@@ -46,6 +46,11 @@ local function ADDON_LOADED(_, addOnName)
         WBL:LoadDB()
         WBL:LoadSavedVariables()
 
+        if WBL.db.settings.minimap.enable then
+            WBL.db.settings.minimap.enable = nil
+            WBL.db.settings.minimap.hide = false
+        end
+
         WBL:RunAnalytics()
 
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", WBL.PLAYER_LOGOUT)
@@ -67,7 +72,7 @@ local function ADDON_LOADED(_, addOnName)
 end
 
 local function PLAYER_LOGIN()
-    WBL:MinimapHandler(WBL.db.settings.minimap.enable)
+    WBL:MinimapHandler(not WBL.db.settings.minimap.hide)
 end
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", ADDON_LOADED)
