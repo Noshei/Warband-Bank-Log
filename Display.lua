@@ -35,6 +35,9 @@ function WBL:CreateDisplay()
 
     WBL.DataProvider = CreateDataProvider()
     local ScrollView = CreateScrollBoxListLinearView()
+    ScrollView:SetElementFactory(function(factory)
+        factory("WBLItemListObjectTemplate", function() end)
+    end)
     WBL.ScrollView = ScrollView
     ScrollView:SetDataProvider(WBL.DataProvider)
 
