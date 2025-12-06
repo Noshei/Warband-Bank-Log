@@ -9,7 +9,7 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 })
 
 WBL.DebugCount = 0
-WBL.EnableDebug = true
+WBL.EnableDebug = false
 
 WBL.FirstRun = true
 
@@ -278,7 +278,6 @@ function WBL:GetBankContent(event)
                     chunks[id] = ""
                 end
             end
-            WBL.test = chunks
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
