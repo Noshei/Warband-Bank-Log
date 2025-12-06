@@ -272,6 +272,7 @@ function WBL:GetBankContent(event)
             local chunks = strsplittable(":", item:GetItemLink())
             chunks[11] = ""
             chunks[12] = ""
+            chunks[37] = ""
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
