@@ -9,7 +9,7 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 })
 
 WBL.DebugCount = 0
-WBL.EnableDebug = false
+WBL.EnableDebug = true
 
 WBL.FirstRun = true
 
@@ -272,7 +272,13 @@ function WBL:GetBankContent(event)
             local chunks = strsplittable(":", item:GetItemLink())
             chunks[11] = ""
             chunks[12] = ""
-            chunks[37] = ""
+            for id, data in ipairs(chunks) do
+                WBL:Debug("Get Bank Content", 4, id, data)
+                if string.find(data, "Player-") then
+                    chunks[id] = ""
+                end
+            end
+            WBL.test = chunks
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
