@@ -10,6 +10,9 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 
 WBL.DebugCount = 0
 WBL.EnableDebug = false
+--@debug@
+WBL.EnableDebug = true
+--@end-debug@
 
 WBL.FirstRun = true
 
@@ -272,12 +275,15 @@ function WBL:GetBankContent(event)
             local chunks = strsplittable(":", item:GetItemLink())
             chunks[11] = ""
             chunks[12] = ""
+            if #chunks > 40 then
+                chunks[21] = ""
+            end
             for id, data in ipairs(chunks) do
-                WBL:Debug("Get Bank Content", 4, id, data)
                 if string.find(data, "Player-") then
                     chunks[id] = ""
                 end
             end
+            WBL.chunks = chunks
             local link = table.concat(chunks, ":")
             tempBank[link] = (tempBank[link] or 0) + item:GetStackCount()
         end
@@ -290,6 +296,7 @@ function WBL:GetBankGold()
     return C_Bank.FetchDepositedMoney(Enum.BankType.Account)
 end
 
+---@return boolean initialize
 function WBL:NeedToInitialize()
     local initialize = false
     if next(WBL.Bank) == nil then
