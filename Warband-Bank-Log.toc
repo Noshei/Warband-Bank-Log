@@ -1,8 +1,8 @@
-## Interface: 110205
+## Interface: 120000
 ## Title: Warband Bank Log
 ## Notes: Provides a log of which character added or removed items/gold from the Warband Bank
 ## Author: Noshei
-## Version: 1.0.21
+## Version: 1.0.22
 ## OptionalDeps: WagoAnalytics
 ## SavedVariables: WarbandBankLogDB, WarbandBankLogSettings
 ## AddonCompartmentFunc: WarbandBankLog_OnAddonCompartmentClick

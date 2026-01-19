@@ -39,7 +39,8 @@
     "ContinuableContainer",
     "RAID_CLASS_COLORS",
     "SOUNDKIT",
-    "BankFrame"
+    "BankFrame",
+    "MailFrame"
 ],
   "Lua.diagnostics.disable": ["assign-type-mismatch"]
 }
