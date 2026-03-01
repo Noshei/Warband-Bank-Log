@@ -11,7 +11,7 @@ WBL.CallbackRegistry:GenerateCallbackEvents({
 WBL.DebugCount = 0
 WBL.EnableDebug = false
 --@debug@
-WBL.EnableDebug = true
+--WBL.EnableDebug = true
 --@end-debug@
 
 WBL.FirstRun = true
